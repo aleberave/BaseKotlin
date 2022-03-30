@@ -2,4 +2,15 @@
     <string name="app_name">My Application Kotlin</string>
     <string name="empty" />
     <string name="myButton">MyButton</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="temperature_label">Температура</string>
+    <string name="feels_like_label">Ощущается как</string>
+    <string name="city_coordinates">lt/ln: %s, %s"</string>
+    <string name="error">Error</string>
+    <string name="reload">Reload</string>
+    <string name="local">local</string>
+    <string name="server">server</string>
+    <string name="exit">exit</string>
 </resources>
