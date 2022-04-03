@@ -8,9 +8,8 @@ sealed class AppState {
     // где бы не вызывалось, должны быть указаны все состояния
     // Класс без параметров передать нельзя, но можно прописать объект singleton
     object Loading : AppState()
-    data class Success(val weatherData: Weather) : AppState() {
-        fun test() {}
-    }
+
+    data class Success(val weatherData: List<Weather>) : AppState()
 
     data class Error(val error: Throwable) : AppState()
 
