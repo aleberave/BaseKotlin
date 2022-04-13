@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentWeatherListBinding
@@ -79,13 +79,21 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        binding.recyclerViewWeatherList.adapter = adapter
-
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        val observer =
-            Observer<AppState> { data -> renderData(data, viewModel) }
+        binding.recyclerViewWeatherList.apply {
+            adapter = this@WeatherListFragment.adapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+// (Delegate - делегирование) viewModel создастся только тогда, когда к ней обратяться/вызовут
+        val viewModel: MainViewModel by lazy {
+            ViewModelProvider(this).get(MainViewModel::class.java)
+        }
+        val observer = { data: AppState -> renderData(data, viewModel) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
+        getFloatingActionButton(viewModel)
+        viewModel.getWeatherRussia(infoWeather)
+    }
 
+    private fun getFloatingActionButton(viewModel: MainViewModel) {
         binding.floatingActionButton.setOnClickListener {
             isRussian = !isRussian
             if (isRussian) {
@@ -106,7 +114,6 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
                 )
             }
         }
-        viewModel.getWeatherRussia(infoWeather)
     }
 
     /**
@@ -141,10 +148,13 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
     }
 
     override fun onItemClick(weather: Weather) {
-        val bundle = Bundle()
-        bundle.putParcelable(KEY_BUNDLE_WEATHER, weather)
         requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.container, DetailsFragment.newInstance(bundle))
+            .add(
+                R.id.container,
+                DetailsFragment.newInstance(Bundle().apply {
+                    putParcelable(KEY_BUNDLE_WEATHER, weather)
+                })
+            )
             .addToBackStack(R.string.empty.toString())
             .commit()
     }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentDetailsBinding
 import ru.geekbrains.myapplicationkotlin.repository.Weather
 import ru.geekbrains.myapplicationkotlin.utils.KEY_BUNDLE_WEATHER
@@ -38,29 +39,37 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // если arguments==null то строка не выполнится
-        val weather: Weather? = requireArguments().getParcelable<Weather>(KEY_BUNDLE_WEATHER)
         // TODO let{}
-        weather?.let { renderData(it) }
+//        val weather: Weather? = requireArguments().getParcelable<Weather>(KEY_BUNDLE_WEATHER)
+//        weather?.let { renderData(it) }
+        arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
+            renderData(it)
+        }
     }
 
     /**
      * Snackbar выводит random (local/server) погоду
      */
     private fun renderData(weather: Weather) {
-        binding.loadingLayout.visibility = View.INVISIBLE
-        binding.cityName.text = weather.city.name
-        binding.temperatureValue.text = weather.temperature.toString()
-        binding.feelsLikeValue.text = weather.feelsLike.toString()
-        "${weather.city.lat} , ${weather.city.lon}".also {
-            binding.cityCoordinates.text = it
+        with(binding) {
+            loadingLayout.visibility = View.INVISIBLE
+            weather.city.name.run { cityName.text = this }
+            "${weather.temperature}".apply { temperatureValue.text = this }
+            "${weather.feelsLike}".let { feelsLikeValue.text = it }
+            "${weather.city.lat} , ${weather.city.lon}".also {
+                cityCoordinates.text = it
+            }
+            view?.showSnackBar(mainView, getString(R.string.get))
         }
-        Snackbar.make(binding.mainView, "Получилось", Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun View.showSnackBar(mainView: View, line: String) {
+        Snackbar.make(mainView, line, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
-        _binding = null
         super.onDestroyView()
+        _binding = null
     }
 }

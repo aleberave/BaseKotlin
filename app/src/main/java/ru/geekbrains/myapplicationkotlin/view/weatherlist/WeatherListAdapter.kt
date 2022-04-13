@@ -46,10 +46,11 @@ class WeatherListAdapter(
     // После уже работаем с элементом (TextView) cityName из связанного макета
     inner class CityHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(weather: Weather) {
-            val bindingItem = FragmentWeatherListRecyclerItemBinding.bind(itemView)
-            bindingItem.cityName.text = weather.city.name
-            bindingItem.root.setOnClickListener {
-                onItemListClickListener.onItemClick(weather)
+            FragmentWeatherListRecyclerItemBinding.bind(itemView).apply {
+                cityName.text = weather.city.name
+                root.setOnClickListener {
+                    onItemListClickListener.onItemClick(weather)
+                }
             }
         }
     }

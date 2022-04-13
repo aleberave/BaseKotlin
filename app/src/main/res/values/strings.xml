@@ -13,4 +13,5 @@
     <string name="local">local</string>
     <string name="server">server</string>
     <string name="exit">exit</string>
+    <string name="get">Получилось</string>
 </resources>
