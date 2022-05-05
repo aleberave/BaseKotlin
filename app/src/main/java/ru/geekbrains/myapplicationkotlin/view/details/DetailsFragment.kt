@@ -1,18 +1,24 @@
 package ru.geekbrains.myapplicationkotlin.view.details
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentDetailsBinding
 import ru.geekbrains.myapplicationkotlin.repository.OnServerResponse
 import ru.geekbrains.myapplicationkotlin.repository.Weather
-import ru.geekbrains.myapplicationkotlin.repository.WeatherDTO
-import ru.geekbrains.myapplicationkotlin.repository.WeatherLoader
-import ru.geekbrains.myapplicationkotlin.utils.KEY_BUNDLE_WEATHER
+import ru.geekbrains.myapplicationkotlin.repository.dto.WeatherDTO
+import ru.geekbrains.myapplicationkotlin.utils.*
 
 class DetailsFragment : Fragment(), OnServerResponse {
 
@@ -21,6 +27,16 @@ class DetailsFragment : Fragment(), OnServerResponse {
         get() {
             return _binding!!
         }
+
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let { intent ->
+                intent.getParcelableExtra<WeatherDTO>(KEY_BUNDLE_SERVICE_BROADCAST_WEATHER)?.let {
+                    onResponse(it)
+                }
+            }
+        }
+    }
 
     companion object {
         @JvmStatic
@@ -43,6 +59,12 @@ class DetailsFragment : Fragment(), OnServerResponse {
     lateinit var currentCityName: String
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            receiver,
+            IntentFilter(KEY_WAVE_SERVICE_BROADCAST)
+        )
+
         // если arguments==null то строка не выполнится
         // TODO let{}
 //        val weather: Weather? = requireArguments().getParcelable<Weather>(KEY_BUNDLE_WEATHER)
@@ -50,10 +72,20 @@ class DetailsFragment : Fragment(), OnServerResponse {
         arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
 //            renderData(it)
             currentCityName = it.city.name
-            // WeatherLoader передаем this@DetailsFragment как реализацию интерфейса OnServerResponse
-            // В таком случае WeatherLoader, когда у тебя уже будет готовый ответ с сервера,
-            // то WeatherLoader вернет ответ в onResponse
-            WeatherLoader(this@DetailsFragment).loadWeather(it.city.lat, it.city.lon)
+//            // WeatherLoader передаем this@DetailsFragment как реализацию интерфейса OnServerResponse
+//            // В таком случае WeatherLoader, когда у тебя уже будет готовый ответ с сервера,
+//            // то WeatherLoader вернет ответ в onResponse
+//            WeatherLoader(this@DetailsFragment).loadWeather(it.city.lat, it.city.lon)
+
+            requireActivity().startService(
+                Intent(
+                    requireContext(),
+                    DetailsService::class.java
+                ).apply {
+                    putExtra(KEY_BUNDLE_LAT, it.city.lat)
+                    putExtra(KEY_BUNDLE_LON, it.city.lon)
+                }
+            )
         }
     }
 
@@ -69,10 +101,11 @@ class DetailsFragment : Fragment(), OnServerResponse {
             "${weather.infoDTO.lat} , ${weather.infoDTO.lon}".also {
                 cityCoordinates.text = it
             }
-            view?.showSnackBar(mainView, getString(R.string.get))
+            mainView.showSnackBar(mainView, getString(R.string.get))
         }
     }
 
+    // расширение класса View (добавление функции для класса View)
     private fun View.showSnackBar(mainView: View, line: String) {
         Snackbar.make(mainView, line, Snackbar.LENGTH_SHORT).show()
     }
@@ -80,6 +113,7 @@ class DetailsFragment : Fragment(), OnServerResponse {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver)
     }
 
     override fun onResponse(weatherDTO: WeatherDTO) {
