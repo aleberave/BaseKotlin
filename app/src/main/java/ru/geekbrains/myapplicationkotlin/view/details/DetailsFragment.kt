@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_details.*
 import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentDetailsBinding
 import ru.geekbrains.myapplicationkotlin.repository.OnServerResponse
@@ -59,7 +60,7 @@ class DetailsFragment : Fragment(), OnServerResponse {
     lateinit var currentCityName: String
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             receiver,
             IntentFilter(KEY_WAVE_SERVICE_BROADCAST)
@@ -77,15 +78,26 @@ class DetailsFragment : Fragment(), OnServerResponse {
 //            // то WeatherLoader вернет ответ в onResponse
 //            WeatherLoader(this@DetailsFragment).loadWeather(it.city.lat, it.city.lon)
 
-            requireActivity().startService(
-                Intent(
-                    requireContext(),
-                    DetailsService::class.java
-                ).apply {
-                    putExtra(KEY_BUNDLE_LAT, it.city.lat)
-                    putExtra(KEY_BUNDLE_LON, it.city.lon)
-                }
-            )
+            if (Settings.System.getInt(
+                    requireActivity().contentResolver,
+                    Settings.Global.AIRPLANE_MODE_ON,
+                    0
+                ) == 0
+            ) {
+                Toast.makeText(requireContext(), "AIRPLANE_MODE Off", Toast.LENGTH_SHORT).show()
+                requireActivity().startService(
+                    Intent(
+                        requireContext(),
+                        DetailsService::class.java
+                    ).apply {
+                        putExtra(KEY_BUNDLE_LAT, it.city.lat)
+                        putExtra(KEY_BUNDLE_LON, it.city.lon)
+                    }
+                )
+            } else {
+                mainView.showSnackBar(mainView, "AIRPLANE_MODE On")
+//                Toast.makeText(requireContext(), "AIRPLANE_MODE On", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
