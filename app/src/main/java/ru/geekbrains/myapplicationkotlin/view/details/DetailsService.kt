@@ -23,7 +23,7 @@ class DetailsService(val name: String = "") : IntentService(name) {
             val lat = it.getDoubleExtra(KEY_BUNDLE_LAT, 0.0)
             Log.d("@@@", "work DetailsService $lat $lon")
 
-            val urlText = "$YANDEX_DOMAIN${YANDEX_PATH}lat=$lat&lon=$lon"
+            val urlText = "$YANDEX_DOMAIN${YANDEX_ENDPOINT}lat=$lat&lon=$lon"
             //val urlText = "$YANDEX_DOMAIN_HARD_MODE${YANDEX_PATH}lat=$lat&lon=$lon"
             val uri = URL(urlText)
 

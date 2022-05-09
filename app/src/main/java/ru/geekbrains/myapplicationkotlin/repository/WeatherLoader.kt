@@ -8,7 +8,7 @@ import ru.geekbrains.myapplicationkotlin.BuildConfig
 import ru.geekbrains.myapplicationkotlin.repository.dto.WeatherDTO
 import ru.geekbrains.myapplicationkotlin.utils.YANDEX_API_KEY
 import ru.geekbrains.myapplicationkotlin.utils.YANDEX_DOMAIN
-import ru.geekbrains.myapplicationkotlin.utils.YANDEX_PATH
+import ru.geekbrains.myapplicationkotlin.utils.YANDEX_ENDPOINT
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
@@ -17,7 +17,7 @@ import javax.net.ssl.HttpsURLConnection
 class WeatherLoader(private val onServerResponseListener: OnServerResponse) {
 
     fun loadWeather(lat: Double, lon: Double) {
-        val urlText = "$YANDEX_DOMAIN${YANDEX_PATH}lat=$lat&lon=$lon"
+        val urlText = "$YANDEX_DOMAIN${YANDEX_ENDPOINT}lat=$lat&lon=$lon"
         val uri = URL(urlText)
 
         Thread {
