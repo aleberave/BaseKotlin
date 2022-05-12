@@ -21,7 +21,6 @@ const val KEY_BUNDLE_SERVICE_MESSAGE = "key2"
 const val KEY_BUNDLE_ACTIVITY_MESSAGE = "key1"
 const val KEY_WAVE = "myaction"
 
-const val IS_WORLD_KEY = "LIST_OF_TOWNS_KEY"
 const val KEY_SP_FILE_NAME_1 = "fileName1"
 const val KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN = "is_russian"
 

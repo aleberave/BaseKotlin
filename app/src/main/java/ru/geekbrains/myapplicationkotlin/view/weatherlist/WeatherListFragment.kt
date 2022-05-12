@@ -33,7 +33,7 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
     private val adapter = WeatherListAdapter(this)
 
     private var infoWeather: Boolean = true
-    private var isRussian: Boolean? = true
+    private var isRussian: Boolean = true
     private lateinit var viewModel: MainViewModel
 
     companion object {
@@ -61,7 +61,7 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
         when (item.itemId) {
             R.id.action_local -> {
                 infoWeather = false
-                if (isRussian!!) {
+                if (isRussian) {
                     viewModel.getWeatherRussia(infoWeather)
                 } else {
                     viewModel.getWeatherWorld(infoWeather)
@@ -69,7 +69,7 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
             }
             R.id.action_server -> {
                 infoWeather = true
-                if (isRussian!!) {
+                if (isRussian) {
                     viewModel.getWeatherRussia(infoWeather)
                 } else {
                     viewModel.getWeatherWorld(infoWeather)
@@ -93,46 +93,42 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
         val observer = { data: AppState -> renderData(data, viewModel) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
 
+        getFloatingActionButton(viewModel)
         showListOfTowns(viewModel)
 
     }
 
     private fun showListOfTowns(viewModel: MainViewModel) {
-        isRussian =
-            sp?.getBoolean(
-                KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN,
-                defaultValueIsRussian
-            )
-        if (isRussian == null) {
-            isRussian = true
+        activity?.let {
+            isRussian =
+                if (it.getSharedPreferences(KEY_SP_FILE_NAME_1, Context.MODE_PRIVATE).getBoolean(
+                        KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN,
+                        true
+                    )
+                ) {
+                    viewModel.getWeatherRussia(infoWeather)
+                    binding.floatingActionButton.setImageResource(R.drawable.ic_russia)
+                    true
+                } else {
+                    viewModel.getWeatherWorld(infoWeather)
+                    binding.floatingActionButton.setImageResource(R.drawable.ic_earth)
+                    false
+                }
+            getSP(isRussian)
         }
-        getFloatingActionButton(viewModel)
-        changeWeatherDataSet(viewModel)
     }
 
-    private val defaultValueIsRussian = false
-    private val sp = activity?.getSharedPreferences(KEY_SP_FILE_NAME_1, Context.MODE_PRIVATE)
-
     private fun getSP(isBoolean: Boolean) {
+        val sp = activity?.getSharedPreferences(KEY_SP_FILE_NAME_1, Context.MODE_PRIVATE)
         val editor = sp?.edit()
         editor?.putBoolean(KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN, isBoolean)
         editor?.apply()
     }
 
-    private fun changeWeatherDataSet(viewModel: MainViewModel) {
-        if (isRussian!!) {
-            viewModel.getWeatherRussia(infoWeather)
-            binding.floatingActionButton.setImageResource(R.drawable.ic_russia)
-        } else {
-            viewModel.getWeatherWorld(infoWeather)
-            binding.floatingActionButton.setImageResource(R.drawable.ic_earth)
-        }
-    }
-
     private fun getFloatingActionButton(viewModel: MainViewModel) {
         binding.floatingActionButton.setOnClickListener {
-            isRussian = !isRussian!!
-            if (isRussian!!) {
+            isRussian = !isRussian
+            if (isRussian) {
                 viewModel.getWeatherRussia(infoWeather)
                 binding.floatingActionButton.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -149,8 +145,8 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
                     )
                 )
             }
+            getSP(isRussian)
         }
-        getSP(isRussian!!)
     }
 
     /**
@@ -166,7 +162,7 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
                 ).setAction("Ещё раз") {
                     val i: Int = (0..2).random()
                     infoWeather = i > 1
-                    if (isRussian!!) {
+                    if (isRussian) {
                         viewModel.getWeatherRussia(infoWeather)
                     } else {
                         viewModel.getWeatherWorld(infoWeather)

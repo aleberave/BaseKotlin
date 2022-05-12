@@ -19,16 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         val receiver = MyBroadcastReceiver()
         registerReceiver(receiver, IntentFilter("android.intent.action.AIRPLANE_MODE"))
-
-
-//        val sp = getSharedPreferences(KEY_SP_FILE_NAME_1, Context.MODE_PRIVATE)
-//
-//        val editor = sp.edit()
-//        editor.putBoolean(KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN, true)
-//        editor.apply()
-//
-//        val defaultValueIsRussian = true
-//        sp.getBoolean(KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN, defaultValueIsRussian)
     }
 }
 
