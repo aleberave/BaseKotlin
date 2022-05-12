@@ -5,10 +5,15 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.load
+import coil.request.ImageRequest
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentDetailsBinding
@@ -87,13 +92,43 @@ class DetailsFragment : Fragment() {
                     feelsLikeValue.text = weather.feelsLike.toString()
                     cityCoordinates.text = "${weather.city.lat}${weather.city.lon}"
                     mainView.showSnackBar(mainView, "Получилось")
+
+                    /*Glide.with(requireContext())
+                    .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                    .into(headerIcon)*/
+
+                    /* Picasso.get()?.load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                         ?.into(headerIcon)*/
+
+                    headerCityIcon.load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                    icon.loadSvg("https://yastatic.net/weather/i/icons/blueye/color/svg/${weather.icon}.svg")
                 }
             }
         }
     }
 
+    /**
+     * Функции-расширения (Extension functions) View
+     */
     private fun View.showSnackBar(mainView: View, line: String) {
         Snackbar.make(mainView, line, Snackbar.LENGTH_SHORT).show()
+    }
+
+    /**
+     * coil
+     * Функции-расширения (Extension functions) ImageView
+     */
+    private fun ImageView.loadSvg(url: String) {
+        val imageLoader = ImageLoader.Builder(this.context)
+            .componentRegistry { add(SvgDecoder(this@loadSvg.context)) }
+            .build()
+        val request = ImageRequest.Builder(this.context)
+            .crossfade(true)
+            .crossfade(500)
+            .data(url)
+            .target(this)
+            .build()
+        imageLoader.enqueue(request)
     }
 
     override fun onDestroyView() {
