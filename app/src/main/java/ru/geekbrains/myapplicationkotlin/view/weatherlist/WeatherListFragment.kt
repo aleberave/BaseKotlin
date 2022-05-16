@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentWeatherListBinding
 import ru.geekbrains.myapplicationkotlin.repository.Weather
+import ru.geekbrains.myapplicationkotlin.utils.HISTORY_WEATHER_LIST_FRAGMENT
 import ru.geekbrains.myapplicationkotlin.utils.KEY_BUNDLE_WEATHER
 import ru.geekbrains.myapplicationkotlin.utils.KEY_SP_FILE_NAME_1
 import ru.geekbrains.myapplicationkotlin.utils.KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN
@@ -77,9 +78,21 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
                 }
             }
             R.id.action_history -> {
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .add(R.id.container, HistoryWeatherListFragment.newInstance())
-                    .addToBackStack("").commit()
+                val fragmentA = requireActivity().supportFragmentManager.findFragmentByTag(
+                    HISTORY_WEATHER_LIST_FRAGMENT
+                )
+                if (fragmentA == null) {
+                    requireActivity().supportFragmentManager.apply {
+                        beginTransaction()
+                            .replace(
+                                R.id.container,
+                                HistoryWeatherListFragment.newInstance(),
+                                HISTORY_WEATHER_LIST_FRAGMENT
+                            )
+                            .addToBackStack(getString(R.string.empty))
+                            .commit()
+                    }
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -98,13 +111,14 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
         }
         val observer = { data: AppState -> renderData(data, viewModel) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
+        this.viewModel = viewModel
 
         getFloatingActionButton(viewModel)
-        showListOfTowns(viewModel)
+        showListOfTowns()
 
     }
 
-    private fun showListOfTowns(viewModel: MainViewModel) {
+    private fun showListOfTowns() {
         activity?.let {
             isRussian =
                 if (it.getSharedPreferences(KEY_SP_FILE_NAME_1, Context.MODE_PRIVATE).getBoolean(

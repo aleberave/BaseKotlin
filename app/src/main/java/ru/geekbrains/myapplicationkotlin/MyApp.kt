@@ -21,7 +21,6 @@ class MyApp : Application() {
             if (db == null) {
                 if (appContext != null) {
                     db = Room.databaseBuilder(appContext!!, MyDB::class.java, "test")
-                        .allowMainThreadQueries()
                         .addMigrations(migration_1_2)
                         .build()
                 } else {

@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val receiver = MyBroadcastReceiver()
-        registerReceiver(receiver, IntentFilter("android.intent.action.AIRPLANE_MODE"))
+        registerReceiver(receiver, IntentFilter(getString(R.string.airplane_mode)))
     }
 }
 
