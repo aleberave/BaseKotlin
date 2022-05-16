@@ -16,6 +16,7 @@ import coil.load
 import coil.request.ImageRequest
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
+import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentDetailsBinding
 import ru.geekbrains.myapplicationkotlin.repository.Weather
 import ru.geekbrains.myapplicationkotlin.utils.KEY_BUNDLE_WEATHER
@@ -59,7 +60,11 @@ class DetailsFragment : Fragment() {
                 0
             ) == 0
         ) {
-            Toast.makeText(requireContext(), "AIRPLANE_MODE Off", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.airplane_mode_off),
+                Toast.LENGTH_SHORT
+            ).show()
             viewModel.getLiveData().observe(viewLifecycleOwner, object : Observer<DetailsState> {
                 override fun onChanged(t: DetailsState) {
                     renderData(t)
@@ -67,10 +72,10 @@ class DetailsFragment : Fragment() {
             })
 
             arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
-                viewModel.getWeather(it.city)
+                viewModel.getWeather(it.city, requireContext())
             }
         } else {
-            mainView.showSnackBar(mainView, "AIRPLANE_MODE On")
+            mainView.showSnackBar(mainView, getString(R.string.airplane_mode_on))
         }
     }
 

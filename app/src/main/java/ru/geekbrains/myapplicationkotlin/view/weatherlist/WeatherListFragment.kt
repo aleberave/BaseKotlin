@@ -15,8 +15,9 @@ import ru.geekbrains.myapplicationkotlin.utils.KEY_BUNDLE_WEATHER
 import ru.geekbrains.myapplicationkotlin.utils.KEY_SP_FILE_NAME_1
 import ru.geekbrains.myapplicationkotlin.utils.KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN
 import ru.geekbrains.myapplicationkotlin.view.details.DetailsFragment
-import ru.geekbrains.myapplicationkotlin.viewmodel.AppState
-import ru.geekbrains.myapplicationkotlin.viewmodel.MainViewModel
+import ru.geekbrains.myapplicationkotlin.view.historylist.HistoryWeatherListFragment
+import ru.geekbrains.myapplicationkotlin.viewmodel.weatherlist.AppState
+import ru.geekbrains.myapplicationkotlin.viewmodel.weatherlist.MainViewModel
 
 class WeatherListFragment : Fragment(), OnItemListClickListener {
 
@@ -74,6 +75,11 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
                 } else {
                     viewModel.getWeatherWorld(infoWeather)
                 }
+            }
+            R.id.action_history -> {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .add(R.id.container, HistoryWeatherListFragment.newInstance())
+                    .addToBackStack("").commit()
             }
         }
         return super.onOptionsItemSelected(item)

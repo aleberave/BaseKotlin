@@ -14,4 +14,8 @@
     <string name="server">server</string>
     <string name="exit">exit</string>
     <string name="get">Получилось</string>
+    <string name="have_not_any_lines">Have not any lines</string>
+    <string name="history">history</string>
+    <string name="airplane_mode_off">AIRPLANE_MODE Off</string>
+    <string name="airplane_mode_on">AIRPLANE_MODE On</string>
 </resources>

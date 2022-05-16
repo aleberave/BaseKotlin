@@ -1,5 +1,7 @@
 package ru.geekbrains.myapplicationkotlin.utils
 
+import ru.geekbrains.myapplicationkotlin.domain.room.HistoryEntity
+import ru.geekbrains.myapplicationkotlin.repository.City
 import ru.geekbrains.myapplicationkotlin.repository.Weather
 import ru.geekbrains.myapplicationkotlin.repository.dto.FactDTO
 import ru.geekbrains.myapplicationkotlin.repository.dto.WeatherDTO
@@ -27,4 +29,19 @@ const val KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN = "is_russian"
 fun convertDtoToModel(weatherDTO: WeatherDTO): Weather {
     val fact: FactDTO = weatherDTO.factDTO
     return (Weather(getDefaultsCity(), fact.temperature, fact.feelsLike, fact.icon))
+}
+
+fun convertHistoryEntityToWeather(entityList: List<HistoryEntity>): List<Weather> {
+    return entityList.map {
+        Weather(
+            City(it.city, 0.0, 0.0),
+            it.temperature,
+            it.feelsLike,
+            it.icon
+        ) // TODO HW было бы здорово научиться хранить в БД lat lon
+    }
+}
+
+fun convertWeatherToEntity(weather: Weather): HistoryEntity {
+    return HistoryEntity(0, weather.city.name, weather.temperature, weather.feelsLike, weather.icon)
 }

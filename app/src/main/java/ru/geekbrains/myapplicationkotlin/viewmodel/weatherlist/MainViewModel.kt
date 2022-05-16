@@ -1,4 +1,4 @@
-package ru.geekbrains.myapplicationkotlin.viewmodel
+package ru.geekbrains.myapplicationkotlin.viewmodel.weatherlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -6,5 +6,6 @@
     <dimen name="text_size">25sp</dimen>
     <dimen name="recycler_view_layout_margin">10dp</dimen>
     <dimen name="recycler_view_dividing_line">1dp</dimen>
+    <dimen name="paddingStart_dividing_history_line">20dp</dimen>
 
 </resources>
