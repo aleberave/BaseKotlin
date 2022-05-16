@@ -19,4 +19,5 @@
     <string name="airplane_mode_off">AIRPLANE_MODE Off</string>
     <string name="airplane_mode_on">AIRPLANE_MODE On</string>
     <string name="airplane_mode">android.intent.action.AIRPLANE_MODE</string>
+    <string name="contacts">contacts</string>
 </resources>

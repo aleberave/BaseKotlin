@@ -5,12 +5,12 @@
         android:id="@+id/action_local"
         android:icon="@drawable/ic_baseline_phonelink_local"
         android:title="@string/local"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_server"
         android:icon="@drawable/ic_baseline_phonelink_server"
         android:title="@string/server"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_exit"
         android:icon="@drawable/ic_baseline_close_app"
@@ -18,7 +18,14 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_history"
+        android:icon="@drawable/ic_baseline_history"
         android:title="@string/history"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_contacts"
+        android:icon="@drawable/ic_baseline_contact_phone"
+        android:title="@string/contacts"
+        app:showAsAction="always" />
 
 </menu>

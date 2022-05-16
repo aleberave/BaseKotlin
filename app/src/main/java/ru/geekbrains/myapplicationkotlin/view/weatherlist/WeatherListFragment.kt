@@ -11,10 +11,8 @@ import com.google.android.material.snackbar.Snackbar
 import ru.geekbrains.myapplicationkotlin.R
 import ru.geekbrains.myapplicationkotlin.databinding.FragmentWeatherListBinding
 import ru.geekbrains.myapplicationkotlin.repository.Weather
-import ru.geekbrains.myapplicationkotlin.utils.HISTORY_WEATHER_LIST_FRAGMENT
-import ru.geekbrains.myapplicationkotlin.utils.KEY_BUNDLE_WEATHER
-import ru.geekbrains.myapplicationkotlin.utils.KEY_SP_FILE_NAME_1
-import ru.geekbrains.myapplicationkotlin.utils.KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN
+import ru.geekbrains.myapplicationkotlin.utils.*
+import ru.geekbrains.myapplicationkotlin.view.contacts.ContactsFragment
 import ru.geekbrains.myapplicationkotlin.view.details.DetailsFragment
 import ru.geekbrains.myapplicationkotlin.view.historylist.HistoryWeatherListFragment
 import ru.geekbrains.myapplicationkotlin.viewmodel.weatherlist.AppState
@@ -88,6 +86,23 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
                                 R.id.container,
                                 HistoryWeatherListFragment.newInstance(),
                                 HISTORY_WEATHER_LIST_FRAGMENT
+                            )
+                            .addToBackStack(getString(R.string.empty))
+                            .commit()
+                    }
+                }
+            }
+            R.id.action_contacts -> {
+                val fragmentA = requireActivity().supportFragmentManager.findFragmentByTag(
+                    CONTACTS_LIST_FRAGMENT
+                )
+                if (fragmentA == null) {
+                    requireActivity().supportFragmentManager.apply {
+                        beginTransaction()
+                            .replace(
+                                R.id.container,
+                                ContactsFragment.newInstance(),
+                                CONTACTS_LIST_FRAGMENT
                             )
                             .addToBackStack(getString(R.string.empty))
                             .commit()

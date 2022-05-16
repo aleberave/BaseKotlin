@@ -27,6 +27,7 @@ const val KEY_SP_FILE_NAME_1 = "fileName1"
 const val KEY_SP_FILE_NAME_1_KEY_IS_RUSSIAN = "is_russian"
 
 const val HISTORY_WEATHER_LIST_FRAGMENT = "history_weather_list_fragment"
+const val CONTACTS_LIST_FRAGMENT = "CONTACTS_list_fragment"
 
 fun convertDtoToModel(weatherDTO: WeatherDTO): Weather {
     val fact: FactDTO = weatherDTO.factDTO
